@@ -34,7 +34,7 @@ def parse_header(headerfull):
             item = keyitem[1].strip()
             header[key] = item
     if header['version']!=FORMAT_VERSION:
-        print 'The version of the file does not correspond to that of this script'
+        print('The version of the file does not correspond to that of this script')
     return header
 
 
@@ -48,7 +48,7 @@ class DataCont(object):
         # -- Find number of records --
         self.filesize = os.path.getsize(filename)
         if (self.filesize-HEADER_SIZE)%CONT_RECORD_SIZE:
-            print 'The file size does not match a integer number of records'
+            print('The file size does not match a integer number of records')
         self.nRecords = (self.filesize-HEADER_SIZE)/CONT_RECORD_SIZE
         if nRecordsToLoad is None:
             nRecordsToLoad = self.nRecords
@@ -57,7 +57,7 @@ class DataCont(object):
         headerfull = fid.read(HEADER_SIZE)
         self.header = parse_header(headerfull)
         if self.header['version']!=FORMAT_VERSION:
-            print 'The version of the file does not correspond to that of this script'
+            print('The version of the file does not correspond to that of this script')
         self.samplingRate = float(self.header['sampleRate'])
 
         dt = np.dtype([('timestamps','<i8'), ('samplesPerRecord','<u2'), ('recordingNumber','<u2'),
@@ -112,7 +112,7 @@ class Events(object):
 
         self.filesize = os.path.getsize(filename)
         if self.filesize==HEADER_SIZE:
-            print 'File is empty'
+            print('File is empty')
             return
 
         # -- Find record size --
@@ -121,11 +121,11 @@ class Events(object):
 
         # -- Find number of records --
         if (self.filesize-HEADER_SIZE)%EVENT_RECORD_SIZE:
-            print 'The file size does not match a integer number of records'
+            print('The file size does not match a integer number of records')
         self.nRecords = (self.filesize-HEADER_SIZE)/EVENT_RECORD_SIZE
 
         if self.header['version']!=FORMAT_VERSION:
-            print 'The version of the file does not correspond to that of this script'
+            print('The version of the file does not correspond to that of this script')
         self.samplingRate = float(self.header['sampleRate'])
 
         # -- Reading timestamps and samplePosition as unsigned, although documentation says signed. --
@@ -194,7 +194,7 @@ class DataSpikes(object):
         # -- Return without setting attributes if the .spikes file is empty --
         self.filesize = os.path.getsize(self.filename)
         if self.filesize==HEADER_SIZE:
-            print 'File is empty'
+            print('File is empty')
             return
 
         # -- Find record size --
@@ -210,11 +210,11 @@ class DataSpikes(object):
 
         # -- Find number of records --
         if (self.filesize-HEADER_SIZE)%SPIKES_RECORD_SIZE:
-            print 'The file size does not match a integer number of records'
+            print('The file size does not match a integer number of records')
         self.nRecords = (self.filesize-HEADER_SIZE)/SPIKES_RECORD_SIZE
 
         if self.header['version']!=FORMAT_VERSION:
-            print 'The version of the file does not correspond to that of this script'
+            print('The version of the file does not correspond to that of this script')
         self.samplingRate = float(self.header['sampleRate'])
 
         dt = np.dtype([('eventType','<u1'), ('timestamps','<i8'), ('electrodeID','<u2'), ('nChannels','<u2'),

@@ -191,7 +191,7 @@ class EphysInterface(object):
             session = '_'.join([date, session])
             sessionIndex = sessionNames.index(session)
         else:
-            print "Unrecognized session format"
+            print("Unrecognized session format")
             pass
         sessionObj = sessions[sessionIndex] #Get the right session object
         return sessionObj
@@ -339,7 +339,7 @@ class EphysInterface(object):
     def avg_spikes_in_event_locked_timerange_each_cond(self, spikeTimestamps, trialsEachCond, eventOnsetTimes, timeRange):
         if len(eventOnsetTimes) != np.shape(trialsEachCond)[0]:
             eventOnsetTimes = eventOnsetTimes[:-1]
-            print "Removing last event onset time to align with behavior data"
+            print("Removing last event onset time to align with behavior data")
         spikeTimesFromEventOnset, trialIndexForEachSpike, indexLimitsEachTrial = spikesanalysis.eventlocked_spiketimes(
             spikeTimestamps, eventOnsetTimes, timeRange)
         spikeArray = self.avg_locked_spikes_per_condition(indexLimitsEachTrial,
@@ -381,7 +381,7 @@ class EphysInterface(object):
         freqLabels = ["%.1f"%freq for freq in np.unique(freqEachTrial)/1000]
         self.one_axis_tc_or_rlf(spikeTimestamps, eventOnsetTimes, freqEachTrial, timeRange=timeRange)
         ax = plt.gca()
-        ax.set_xticks(range(len(freqLabels)))
+        ax.set_xticks(list(range(len(freqLabels))))
         ax.set_xticklabels(freqLabels, rotation='vertical')
 
     # TODO: This seems like it would be good to get working, even though people don't really use it.
@@ -634,7 +634,7 @@ class EphysInterface(object):
         '''
         from jaratoolbox import spikesorting
 
-        print 'Clustering tetrode {}'.format(tetrode)
+        print('Clustering tetrode {}'.format(tetrode))
         sessionObj = self.get_session_obj(session, experiment, site)
 
         oneTT = spikesorting.TetrodeToCluster(sessionObj.subject,
@@ -811,7 +811,7 @@ class EphysInterface(object):
                         # spikeArray = dataplotter.avg_spikes_in_event_locked_timerange_each_cond(spikeTimestamps, trialsEachCond, eventOnsetTimes, timeRange=tuningTimeRange)
                         spikeArray = self.avg_spikes_in_event_locked_timerange_each_cond(spikeTimestamps, trialsEachCond, eventOnsetTimes, timeRange=tuningTimeRange)
                         psth_ax.plot(spikeArray, ls='-', lw=2, color = clusterColor)
-                        psth_ax.set_xticks(range(len(np.unique(freqEachTrial))))
+                        psth_ax.set_xticks(list(range(len(np.unique(freqEachTrial)))))
                         psth_ax.set_xticklabels(freqLabels,fontsize=8)
                     psth_ax.hold(1)
                     psth_ax.axvline(x=0, color='k')

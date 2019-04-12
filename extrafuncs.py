@@ -58,7 +58,7 @@ def reverse_dict(onedict):
     It ignores keys if the value already exists.
     '''
     # {v:k for k, v in onedict.items()} # For Python 2.7+
-    return onedict.__class__(map(reversed, onedict.items()))
+    return onedict.__class__(list(map(reversed, list(onedict.items()))))
 
 
 def moving_average_masked(thearray,winsize,sem=False):

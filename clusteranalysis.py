@@ -62,7 +62,7 @@ def calculate_avg_waveforms(subject, ephysSession, tetrode, clustersPerTetrode=1
     # DONE: loop through clusters
     allWaveforms = np.empty((clustersPerTetrode,wavesize))
     for indc in range(clustersPerTetrode):
-        print 'Estimating average waveform for {0} T{1}c{2}'.format(ephysSession,tetrode,indc+1)
+        print('Estimating average waveform for {0} T{1}c{2}'.format(ephysSession,tetrode,indc+1))
 
         # DONE: get waveforms for one cluster
         #Add 1 to the cluster index because clusters start from 1
@@ -280,7 +280,7 @@ def print_reports_clusters(subject, sessions, tetrode, printer):
         reportFilename = '{}_{}_T{}.png'.format(subject, session, tetrode)
         fullReportPath = os.path.join(reportsDir, reportFilename)
         printcommand = ['lpr', '-P {}'.format(printer), fullReportPath]
-        print ' '.join(printcommand)
+        print(' '.join(printcommand))
         # subprocess.call(printcommand)
 
 
@@ -313,14 +313,14 @@ if __name__=='__main__':
         cellDB = celldatabase.CellDatabase()
         oneES = eSession(animalName='test089',
                          ephysSession = '2015-07-31_14-40-40',
-                         clustersEachTetrode = {1:range(1,13),2:range(1,13),3:range(1,13),4:range(1,13),
-                                                5:range(1,13),6:range(1,13),7:range(1,13),8:range(1,13)},
+                         clustersEachTetrode = {1:list(range(1,13)),2:list(range(1,13)),3:list(range(1,13)),4:list(range(1,13)),
+                                                5:list(range(1,13)),6:list(range(1,13)),7:list(range(1,13)),8:list(range(1,13))},
                          behavSession = '20150731a')
         cellDB.append_session(oneES)
         oneES = eSession(animalName='test089',
                          ephysSession = '2015-08-21_16-16-16',
-                         clustersEachTetrode = {1:range(1,13),2:range(1,13),3:range(1,13),4:range(1,13),
-                                                5:range(1,13),6:range(1,13),7:range(1,13),8:range(1,13)},
+                         clustersEachTetrode = {1:list(range(1,13)),2:list(range(1,13)),3:list(range(1,13)),4:list(range(1,13)),
+                                                5:list(range(1,13)),6:list(range(1,13)),7:list(range(1,13)),8:list(range(1,13))},
                          behavSession = '20150821a')
         cellDB.append_session(oneES)
 
@@ -342,13 +342,13 @@ if __name__=='__main__':
 
         #Save the list of waveform arrays as compressed binary file
         waveFile = '/tmp/{}waves.npz'.format(subject)
-        np.savez_compressed(waveFile, **dict(zip(sessions, sessionWaves)))
+        np.savez_compressed(waveFile, **dict(list(zip(sessions, sessionWaves))))
 
         #Read the saved waveforms back in as a list
         #TODO: This returns a dict, which may not be sorted
         arrFile = np.load(waveFile)
-        loadWaves = [arr for name, arr in arrFile.items()]
-        loadSessions = [name for name, arr in arrFile.items()]
+        loadWaves = [arr for name, arr in list(arrFile.items())]
+        loadSessions = [name for name, arr in list(arrFile.items())]
 
         ccSelf, ccAcross = spikeshape_correlation(loadWaves)
 
@@ -364,7 +364,7 @@ if __name__=='__main__':
 
         ##
         subject = 'adap015'
-        tetrodes = range(1, 9)
+        tetrodes = list(range(1, 9))
         corrThresh = 0.7 #The lower limit for the correlation value 
         isiThresh = 0.02 #The upper threshold for ISI violations
         ##
@@ -403,10 +403,10 @@ if __name__=='__main__':
                 #NOTE: I first used np.savez, but it saved a dict and did not preserve the order of the sessions. Pickle saves the actual object.
                 #TODO: Use np.savez with the data object to save as the list of arrays
                 #TODO: Also see if we should use savez_compressed
-                print "Loading average waves for {} tetrode {}".format(subject, tetrode)
+                print("Loading average waves for {} tetrode {}".format(subject, tetrode))
                 sessionWaves = pickle.load(open(waveFile, 'rb'))
             else:
-                print "Calculating average waves for Subject {} tetrode {}".format(subject, tetrode)
+                print("Calculating average waves for Subject {} tetrode {}".format(subject, tetrode))
                 sessionWaves = waveforms_many_sessions(subject, sessions, tetrode)
                 pickle.dump(sessionWaves, open(waveFile, 'wb'))
 

@@ -155,8 +155,8 @@ class Cell(object):
         for sessionInd, sessionType in enumerate(self.dbRow['sessionType']):
             try:
                 ephysData = self.load_ephys_by_index(sessionInd)
-            except ValueError, errMsg: #File contains no spikes
-                print str(errMsg)
+            except ValueError as errMsg: #File contains no spikes
+                print(str(errMsg))
                 continue
             numSpikes = len(ephysData['spikeTimes'])
             sessionVector = np.zeros(numSpikes)+sessionInd
@@ -215,10 +215,10 @@ def load_ephys(subject, paradigm, sessionDir, tetrode, cluster=None, useModified
             # Use the modified .clu file if it exists, otherwise use the original one
             clustersFileModified = os.path.join(clustersDir,'Tetrode{}.clu.modified'.format(tetrode))
             if os.path.exists(clustersFileModified):
-                print "Loading modified .clu file for session {}".format(spikesFilename)
+                print("Loading modified .clu file for session {}".format(spikesFilename))
                 spikeData.set_clusters(clustersFileModified)
             else:
-                print "Modified .clu file does not exist, loading standard .clu file for session {}".format(spikesFilename)
+                print("Modified .clu file does not exist, loading standard .clu file for session {}".format(spikesFilename))
                 clustersFile = os.path.join(clustersDir,'Tetrode{}.clu.1'.format(tetrode))
                 spikeData.set_clusters(clustersFile)
         spikeData.samples = spikeData.samples[spikeData.clusters==cluster]
@@ -231,7 +231,7 @@ def load_ephys(subject, paradigm, sessionDir, tetrode, cluster=None, useModified
     #Choose channel map based on paradigm
     channelMap = CHANNELMAPS[paradigm]
     eventDict = {}
-    for channelType, channelID in channelMap.iteritems():
+    for channelType, channelID in channelMap.items():
         thisChannelOn = eventData.get_event_onset_times(eventID=1, eventChannel=channelID)
         thisChannelOff = eventData.get_event_onset_times(eventID=0, eventChannel=channelID)
         eventDict.update({'{}On'.format(channelType):thisChannelOn,

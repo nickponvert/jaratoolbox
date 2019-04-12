@@ -156,7 +156,7 @@ def load_many_sessions(animalNames,sessions,paradigm='2afc',loadingClass=None,da
                 behavFile = loadbehavior.path_to_behavior_data(animalName,paradigm,thisSession)
                 behavData = loadingClass(behavFile,readmode=readmode)
             except IOError:
-                print thisSession+' does not exist'
+                print(thisSession+' does not exist')
                 continue
             if inds==0:
                 allBehavData = behavData  # FIXME: Should it be .copy()?
@@ -164,8 +164,8 @@ def load_many_sessions(animalNames,sessions,paradigm='2afc',loadingClass=None,da
                 allBehavData['sessionID'] = np.zeros(nTrials,dtype='i2')
                 allBehavData['animalID'] = np.zeros(nTrials,dtype='i1')
             else:
-                for key,val in behavData.iteritems():
-                    if not allBehavData.has_key(key):
+                for key,val in behavData.items():
+                    if key not in allBehavData:
                         allBehavData[key]=val
                     else:
                         allBehavData[key] = np.concatenate((allBehavData[key],val))
@@ -205,9 +205,9 @@ def behavior_summary(subjects,sessions,trialslim=[],outputDir='',paradigm='2afc'
                 behavFile = loadbehavior.path_to_behavior_data(animalName,paradigm,thisSession)
                 behavData = loadingClass(behavFile,readmode='full')
             except IOError:
-                print thisSession+' does not exist'
+                print(thisSession+' does not exist')
                 continue
-            print 'Loaded %s %s'%(animalName,thisSession)
+            print('Loaded %s %s'%(animalName,thisSession))
             # -- Plot either psychometric or average performance
             thisAnimalPos = 3*inda*nSessions
             thisPlotPos = thisAnimalPos+3*inds
@@ -256,7 +256,7 @@ def behavior_summary(subjects,sessions,trialslim=[],outputDir='',paradigm='2afc'
         figformat = 'png' #'png' #'pdf' #'svg'
         filename = 'behavior_%s_%s.%s'%(animalStr,sessionStr,figformat)
         fullFileName = os.path.join(outputDir,filename)
-        print 'saving figure to %s'%fullFileName
+        print('saving figure to %s'%fullFileName)
         plt.gcf().savefig(fullFileName,format=figformat)
 
 
@@ -354,7 +354,7 @@ def plot_dynamics_2afc(behavData,winsize=40,fontsize=12):
         choiceVecThisSide = np.ma.masked_array(rightChoice[valid])
         choiceVecThisSide.mask = ~trialsThisSide[valid]
         movAvChoice = extrafuncs.moving_average_masked(choiceVecThisSide,winsize)
-        hp, = plt.plot(range(0,len(movAvChoice)),100*movAvChoice,
+        hp, = plt.plot(list(range(0,len(movAvChoice))),100*movAvChoice,
                        lw=lineWidth,color=thisColor)
         hPlots.append(hp)
     plt.ylim([-5,105])
@@ -379,7 +379,7 @@ def plot_dynamics_2afc_by_freq(behavData,winsize=40,fontsize=12,soundfreq=None):
     else:
         possibleFreq = soundfreq
     possibleColors = FREQCOLORS + ['k','m','c', 'b','r','g']
-    colorEachFreq = dict(zip(possibleFreq,possibleColors))
+    colorEachFreq = dict(list(zip(possibleFreq,possibleColors)))
 
     behavData.find_trials_each_block()
 
@@ -402,7 +402,7 @@ def plot_dynamics_2afc_by_freq(behavData,winsize=40,fontsize=12,soundfreq=None):
             choiceVecThisFreq = np.ma.masked_array(rightChoice[validThisBlock])
             choiceVecThisFreq.mask = ~trialsThisFreq[validThisBlock]
             movAvChoice = extrafuncs.moving_average_masked(choiceVecThisFreq,winsize)
-            hp, = plt.plot(range(firstValidEachBlock[indb],lastValidEachBlock[indb]),100*movAvChoice,
+            hp, = plt.plot(list(range(firstValidEachBlock[indb],lastValidEachBlock[indb])),100*movAvChoice,
                            lw=lineWidth,color=thisColor)
             hPlots.append(hp)
     plt.ylim([-5,105])
@@ -432,7 +432,7 @@ def calculate_psychometric(hitTrials,paramValueEachTrial,valid=None):
         from statsmodels.stats.proportion import proportion_confint #Used to compute confidence interval for the error bars. 
         useCI = True
     except ImportError:
-        print 'Warning: To calculate confidence intervals, please install "statsmodels" module.'
+        print('Warning: To calculate confidence intervals, please install "statsmodels" module.')
         useCI = False
     nTrials = len(hitTrials)
     if valid is None:
@@ -561,7 +561,7 @@ if __name__ == "__main__":
         bdata=loadbehavior.BehaviorData(fname)
         (possibleFreq,pRightEach,ci,nTrialsEach,nRightwardEach) = OLD_calculate_psychometric(bdata,
                                                                                          parameterName='targetFrequency')
-        print pRightEach
+        print(pRightEach)
     elif CASE==4:
         allBehavData = load_many_sessions(['test020'],sessions=['20140421a','20140422a','20140423a'])
     elif CASE==5:
@@ -570,12 +570,12 @@ if __name__ == "__main__":
         tet = find_trials_each_type(param,possibleParam)
         mask = param>4
         tet = tet & mask[:,np.newaxis]
-        print possibleParam
-        print tet
+        print(possibleParam)
+        print(tet)
     elif CASE==6:
         #parameter1 = np.array([1,2,3,4,5,1,2,3,4,5])
         #parameter2 = np.array([2,2,2,3,3,3,4,4,4,4])
         parameter1 = np.array([1,2,1,2])
         parameter2 = np.array([4,4,5,6])
         tet = find_trials_each_combination(parameter1,np.unique(parameter1),parameter2,np.unique(parameter2))
-        print tet
+        print(tet)

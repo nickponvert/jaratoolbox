@@ -52,7 +52,7 @@ class CellInfo(object):
         return fullPath
     def __repr__(self):
         objStrings = []
-        for key,value in sorted(vars(self).iteritems()):
+        for key,value in sorted(vars(self).items()):
             objStrings.append('%s: %s\n'%(key,str(value)))
         return ''.join(objStrings)
     def __str__(self):
@@ -76,7 +76,7 @@ class MultiUnitInfo(object):
         #self.soundResponsive = None
     def __repr__(self):
         objStrings = []
-        for key,value in sorted(vars(self).iteritems()):
+        for key,value in sorted(vars(self).items()):
             objStrings.append('%s: %s\n'%(key,str(value)))
         return ''.join(objStrings)
     def __str__(self):
@@ -107,7 +107,7 @@ class CellDatabase(list):
                     if trialset[0]==tetrode and trialset[1]==cluster:
                         oneCell.trialsToExclude = trialset[2]
                     else:
-                        print "Format of 'trialsToExclude' is not correct ({0})".format(oneCell)
+                        print("Format of 'trialsToExclude' is not correct ({0})".format(oneCell))
                 self.append(oneCell)
 
 
@@ -587,17 +587,17 @@ def generate_cell_database(inforecPath):
     tetrodeStatsFormat = 'Tetrode{}_stats.npz'
     #inforec = imp.load_source('module.name', inforecPath) # 'module.name' was meant to be an actual name
     inforec = imp.load_source('inforec_module', inforecPath)
-    print '\n# -- Generating database for new inforec file -- #\n'
+    print('\n# -- Generating database for new inforec file -- #\n')
     db = pd.DataFrame(dtype=object)
     for indExperiment, experiment in enumerate(inforec.experiments):
         #Complain if the maxDepth attr is not set for this experiment
         if experiment.maxDepth is None:
-             print "Attribute maxDepth not set for experiment with subject {} on {}".format(experiment.subject, experiment.date)
+             print("Attribute maxDepth not set for experiment with subject {} on {}".format(experiment.subject, experiment.date))
              # maxDepthThisExp = None
              raise AttributeError('You must set maxDepth for each experiment.')
         else:
             maxDepthThisExp = experiment.maxDepth
-        print 'Adding experiment from {} on {}'.format(experiment.subject, experiment.date)
+        print('Adding experiment from {} on {}'.format(experiment.subject, experiment.date))
         for indSite, site in enumerate(experiment.sites):
             #clusterDir = clusterDirFormat.format(indExperiment, indSite)
              clusterFolder = site.clusterFolder
@@ -711,9 +711,9 @@ def load_hdf(filename, root='/'):
     try:
         h5file = h5py.File(filename,'r')
     except IOError:
-        print '{0} does not exist or cannot be opened.'.format(filename)
+        print('{0} does not exist or cannot be opened.'.format(filename))
         raise
-    for varname,varvalue in h5file[root].items():
+    for varname,varvalue in list(h5file[root].items()):
         if varvalue.dtype==np.int or varvalue.dtype==np.float:
             if len(varvalue.shape)==1:
                 dbDict[varname] = varvalue[...]

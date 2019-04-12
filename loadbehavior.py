@@ -19,7 +19,7 @@ def dict_from_HDF5(dictGroup):
                    where h5file is an open HDF5.
     '''
     newDict={}
-    for k,v in dictGroup.iteritems():
+    for k,v in dictGroup.items():
         newDict[k]=v[()]
         newDict[v[()]]=k
     return newDict
@@ -61,7 +61,7 @@ class BehaviorData(dict):
         try:
             self.h5file = h5py.File(self.filename,'r')
         except IOError:
-            print '{0} does not exist or cannot be opened.'.format(self.filename)
+            print('{0} does not exist or cannot be opened.'.format(self.filename))
             raise
         try:
             if readmode=='summary':
@@ -71,7 +71,7 @@ class BehaviorData(dict):
             elif varlist:
                 self.read_subset(varlist)
         except IOError:
-            print 'Some error occurred while reading data.'
+            print('Some error occurred while reading data.')
             self.h5file.close()
             raise
         self.h5file.close()
@@ -79,15 +79,15 @@ class BehaviorData(dict):
         '''
         Read all variables from file.
         '''
-        for varname,varvalue in self.h5file['/resultsData'].items():
+        for varname,varvalue in list(self.h5file['/resultsData'].items()):
             self[varname] = varvalue[...]
-        for varname,varvalue in self.h5file['/resultsLabels'].items():
+        for varname,varvalue in list(self.h5file['/resultsLabels'].items()):
             self.labels[varname] = dict_from_HDF5(varvalue)
-        for varname,varvalue in self.h5file['/stateMatrix'].items():
+        for varname,varvalue in list(self.h5file['/stateMatrix'].items()):
             self.stateMatrix[varname] = dict_from_HDF5(varvalue)
-        for varname,varvalue in self.h5file['/events'].items():
+        for varname,varvalue in list(self.h5file['/events'].items()):
             self.events[varname] = varvalue[...]
-        for varname,varvalue in self.h5file['/sessionData'].items():
+        for varname,varvalue in list(self.h5file['/sessionData'].items()):
             self.session[varname] = str(varvalue[...])
     def read_summary(self):
         '''
@@ -101,7 +101,7 @@ class BehaviorData(dict):
             try:
                 self[thisparam] = self.h5file['/resultsData/'+thisparam][-1]
             except KeyError:
-                print "{0} has no key '{1}'".format(self.filename,thisparam)
+                print("{0} has no key '{1}'".format(self.filename,thisparam))
                 self[thisparam] = 0
     
     def read_subset(self,varlist):
@@ -114,7 +114,7 @@ class BehaviorData(dict):
             try:
                 self[thisparam] = self.h5file['/resultsData/'+thisparam][...]
             except KeyError:
-                print "{0} has no key '{1}'".format(self.filename,thisparam)
+                print("{0} has no key '{1}'".format(self.filename,thisparam))
                 self[thisparam] = 0
     
     def remove_trials(self,trialslist):
@@ -123,12 +123,12 @@ class BehaviorData(dict):
         Note that self.events is not modified. This is trickier, and maybe changing
         only events['indexLastEventEachTrial'] would work.
         '''
-        for varname in self.iterkeys():
+        for varname in self.keys():
             self[varname] = np.delete(self[varname],trialslist)
 
     def __str__(self):
         objStrings = []
-        for key,value in sorted(self.iteritems()):
+        for key,value in sorted(self.items()):
             if isinstance(value,np.ndarray):
                 objStrings.append('%s : %s\n'%(key,str(value.shape)))
             elif isinstance(value,int):
@@ -183,7 +183,7 @@ if __name__ == "__main__":
         bdata = FlexCategBehaviorData(bfile,readmode='full')
     if CASE==3:
         bfile=path_to_behavior_data('test020','santiago','2afc','20140421a')
-        print bfile
+        print(bfile)
         bdata = FlexCategBehaviorData(bfile,readmode='full')
         from pylab import *
         hold(0)

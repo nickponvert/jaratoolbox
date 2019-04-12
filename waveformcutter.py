@@ -13,7 +13,8 @@ import numpy as np
 import os
 from pylab import *
 from jaratoolbox import spikesorting
-reload(spikesorting)
+import importlib
+importlib.reload(spikesorting)
 
 
 SAMPLES_PER_SPIKE = 32
@@ -54,11 +55,11 @@ class WaveformCutterSession(object):
         return objstr
 
     def load_data(self,animalName,ephysSession,tetrode):
-        print 'Loading data...'
+        print('Loading data...')
         self.dataTT = loadopenephys.DataSpikes(self.tetrodeFile) #,readWaves=True)
         self.nSpikes = self.dataTT.samples.shape[0]# FIXME: this is specific to the OpenEphys format
         self.dataTT.samples = self.dataTT.samples.astype(float)-2**15# FIXME: this is specific to OpenEphys
-        print 'Aligning to peak...'
+        print('Aligning to peak...')
         #self.dataTT.samples = spikesorting.align_waveforms(self.dataTT.samples)
         self.align_spikes()
         # FIXME: This assumes the gain is the same for all channels and records
@@ -70,7 +71,7 @@ class WaveformCutterSession(object):
             self.dataTT.set_clusters(self.clustersFile)
             self.assign_clusters()
         else:
-            print('Clusters file does not exist for this tetrode: {0}'.format(self.clustersFile))
+            print(('Clusters file does not exist for this tetrode: {0}'.format(self.clustersFile)))
         self.set_attributes()
 
     def assign_clusters(self):
@@ -270,11 +271,11 @@ class WaveformCutterSession(object):
         self.outputFile = os.path.join(self.clustersDir,'Tetrode%d.clu.2'%self.tetrode)    
         if os.path.exists(self.outputFile):
             if confirm:
-                ovwr = raw_input('Overwrite file? [y/n]  ')
+                ovwr = input('Overwrite file? [y/n]  ')
                 if ovwr!='y':
-                    print 'Nothing was saved'
+                    print('Nothing was saved')
                     return
-        print 'Saving clusters to %s'%self.outputFile
+        print('Saving clusters to %s'%self.outputFile)
         self.find_cluster_each_spike()
         dataToSave = np.concatenate(([self.nClusters],self.clusterEachSpike+1))
         np.savetxt(self.outputFile, dataToSave, fmt="%d")
@@ -282,7 +283,7 @@ class WaveformCutterSession(object):
     def update_plot(self):
         clf()
         ax1 = subplot(1,2,1)
-        self.plot_waveforms(200,exclude=range(self.nClusters))
+        self.plot_waveforms(200,exclude=list(range(self.nClusters)))
         ax2 = subplot(1,2,2,sharey=ax1)
         colorEach = ['b','g','r','m','c','k','y','g','r','y','c','m']
         hp = self.nClusters*[0]
@@ -297,7 +298,7 @@ class WaveformCutterSession(object):
         origFile = self.clustersFile
         backupFile = origFile+'.orig'
         fullCommand = cmdFormat%(origFile,backupFile)
-        print 'Executing: %s'%fullCommand
+        print('Executing: %s'%fullCommand)
         os.system(fullCommand)
 
 
@@ -353,8 +354,8 @@ class Cluster(object):
             self.spikesBool = self.spikesBool & selectedSpikes
         self.spikesInds = np.flatnonzero(self.spikesBool)
         self.nSpikes = len(self.spikesInds)
-        print(self.bounds)
-        print(self.nSpikes)
+        print((self.bounds))
+        print((self.nSpikes))
     def plot_waveforms(self,channel,nTraces=40,color='k'):
         spikesToPlot = self.spikesInds[np.random.randint(self.nSpikes,size=nTraces)]
         hold(True)

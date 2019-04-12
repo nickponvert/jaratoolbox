@@ -88,15 +88,15 @@ class OverlayGrid(object):
 
     def onclick(self,event):
         #ix, iy = event.xdata, event.ydata
-        print '({0},{1})'.format(int(event.xdata), int(event.ydata))
+        print('({0},{1})'.format(int(event.xdata), int(event.ydata)))
         #global corners
         self.corners.append((event.xdata, event.ydata))
         if len(self.corners) == 2:
             self.fig.canvas.mpl_disconnect(self.cid)
             self.set_grid(self.corners)
             draw_grid(self.corners, nRows = self.nRows, nCols = self.nCols)
-            print 'Done. Now you can apply this grid to another image using apply_grid()'
-            print 'Press enter to continue'
+            print('Done. Now you can apply this grid to another image using apply_grid()')
+            print('Press enter to continue')
 
     def on_key_press(self, event):
         '''
@@ -125,7 +125,7 @@ class OverlayGrid(object):
         self.image = mpimg.imread(imgfile)
         self.fig = plt.gcf()
         self.show_image(self.image)
-        print 'Click two points to define corners of grid.'
+        print('Click two points to define corners of grid.')
         self.cid = self.fig.canvas.mpl_connect('button_press_event', self.onclick)
         # FIXME: find if waiting for click can block execution of the rest.
 
@@ -226,7 +226,7 @@ class BrainGrid(OverlayGrid):
         '''
         cornersDir = os.path.join(settings.HISTOLOGY_PATH, self.animalName, 'gridcorners')
         if self.side == '':
-            sideInput = raw_input("Enter the side if necessary: ")
+            sideInput = input("Enter the side if necessary: ")
             cornersFile = os.path.join(cornersDir, 'corners_{}{}.json'.format(self.stackLabel, sideInput))
         else:
             cornersFile = os.path.join(cornersDir, 'corners_{}{}.json'.format(self.stackLabel, self.side))
@@ -375,7 +375,7 @@ class BrainGrid(OverlayGrid):
         '''
         cornersFile, cornersDir = self.corners_file()
         if not os.path.exists(cornersFile):
-            print "No corners for this set of images"
+            print("No corners for this set of images")
             pass
         self.load_corners(cornersFile)
 
@@ -450,7 +450,7 @@ class AllenAnnotation(object):
     def get_total_voxels_per_area(self, zCoord):
         allIDsThisSlice = self.annotationVol[:,:,zCoord].ravel()
         voxelsPerID = collections.Counter(allIDsThisSlice)
-        voxelsPerStructure = {self.get_structure_from_id(structID):count for structID, count in voxelsPerID.iteritems()}
+        voxelsPerStructure = {self.get_structure_from_id(structID):count for structID, count in voxelsPerID.items()}
         return voxelsPerStructure
 
 class AllenCorticalCoordinates(object):
@@ -500,7 +500,7 @@ class AllenAtlas(object):
         ymin, ymax = self.ax.get_ylim()
         xmin, xmax = self.ax.get_xlim()
         self.ax.plot(event.xdata, event.ydata, 'r+')
-        print "[{}, {}, {}]".format(int(event.xdata), int(event.ydata), int(self.sliceNum))
+        print("[{}, {}, {}]".format(int(event.xdata), int(event.ydata), int(self.sliceNum)))
         self.ax.set_ylim([ymin, ymax])
         self.ax.set_xlim([xmin, xmax])
         self.fig.canvas.draw()
@@ -566,7 +566,7 @@ def get_svg_transform(filename, sliceSize=[1388, 1040]):
         raise ValueError('The SVG file must contain exactly 2 images')
     if (images[0].attrib['x']!='0') or (images[0].attrib['y']!='0'):
         raise ValueError('The first image (CCF) must be located at (0,0).')
-    if images[1].attrib.has_key('transform'):
+    if 'transform' in images[1].attrib:
         transformString = images[1].attrib['transform']
         if transformString.startswith('matrix'):
             transformValueStrings = re.findall(r'-?\d+\.*\d*', transformString)
@@ -660,7 +660,7 @@ def save_svg_for_registration(filenameSVG, filenameAtlas, filenameSlice, verbose
     fileSVG.write(svgString)
     fileSVG.close()
     if verbose:
-        print('Saved {}'.format(filenameSVG))
+        print(('Saved {}'.format(filenameSVG)))
     return (atlasIm.size, sliceIm.size)
 
 

@@ -235,7 +235,7 @@ def plot_psychometric_fit(xValues,nTrials,nHits,curveParams=[],color='k'):
     '''
     Plot average performance for each value and fitted curve.
     '''
-    import extrastats
+    from . import extrastats
     solidXvalues = np.flatnonzero((nTrials/sum(nTrials).astype(float))>(1.0/len(nTrials)))
     yValues = nHits.astype(float)/nTrials
     xRange = xValues[-1]-xValues[1]
@@ -371,7 +371,7 @@ def save_figure(filename, fileformat, figsize, outputDir='./'):
     plt.gcf().set_frameon(False)
     plt.savefig(fullName,format=fileformat,facecolor='none')
     plt.gcf().set_frameon(True)
-    print('Figure saved to {0}'.format(fullName))
+    print(('Figure saved to {0}'.format(fullName)))
 
 
 class FlipThrough(object):
